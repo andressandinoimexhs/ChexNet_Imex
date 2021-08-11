@@ -16,8 +16,8 @@ df = pd.read_csv(path)
 
 labels = df['Finding Labels']
 
-for col in df.columns:
-    print(col)
+# for col in df.columns:
+#     print(col)
 
 
 #%%
@@ -106,8 +106,8 @@ nq =  pd.DataFrame(columns = ['filename', 'A1','A2','A3',
                                    'A13','A14'])
 kk=""
 pepito=[]
-#for i in tqdm(range(len(labels))):
-for i in tqdm(range(0,50)):
+for i in tqdm(range(len(labels))):
+#for i in tqdm(range(0,1000)):
     
     ll=[]
     label = df['Finding Labels'][i]  
@@ -125,10 +125,12 @@ for i in tqdm(range(0,50)):
     ll=createrowtable(filename,npm)
     #print(ll)
     nq = nq.append(ll,ignore_index=True)
-    
-    
-    
-                 
+
+#%%     
+nq.to_csv('C:/Users/Andres/Desktop/file_name.csv')
+print("Fin del proceso")
+
+#np.savetxt('C:/Users/Andres/Desktop/np.txt', df.values, fmt='%d')                 
 
 
 #%%

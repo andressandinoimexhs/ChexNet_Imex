@@ -12,6 +12,8 @@ import os
 from os import listdir
 import math
 
+import pandas as pd
+
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import Sequential,datasets, layers, models
 from tensorflow.keras.layers import Dense
@@ -20,13 +22,15 @@ from tensorflow.keras.optimizers import Adam
 
 #%%
 
-dataframe=nq
+dataframe = pd.read_csv("C:/Users/Andres/Desktop/datainfo.csv") 
+
+#%%
 
 classes =  dataframe.columns[1:].values.tolist()
 
 batch_size = 16
 color_mode = 'rgb'  # rgb 
-img_directory_path = "C:/Users/Andres/Desktop/images/"
+img_directory_path = "/Users/Andres/Desktop/images/"
 target_size = (224, 224)
 
 
