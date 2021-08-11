@@ -26,10 +26,29 @@ from tensorflow.keras.optimizers import Adam
 dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv") 
 
 #%%
+"""
+    A1: "Atelectasis"
+    A2: "Cardiomegaly"
+    A3: "Effusion",
+    A4: "Infiltration"
+    A5: "Mass"
+    A6: "Nodule"
+    A7: "Pneumonia"
+    A8: "Pneumothorax"
+    A9: "Consolidation"
+    A10: "Edema"
+    A11: "Emphysema"
+    A12: "Fibrosis"
+    A13: "Pleural_Thickening"
+    A14: "Hernia"
+    
+"""
 
-#classes =  dataframe.columns[1:].values.tolist()
+#%%
 
-classes = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14']
+classes = ['A1','A2','A3','A4','A5',
+           'A6','A7','A8','A9','A10',
+           'A11','A12','A13','A14']
 
 batch_size = 4
 color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
