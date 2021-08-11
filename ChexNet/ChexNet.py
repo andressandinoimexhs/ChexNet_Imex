@@ -21,15 +21,18 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint,LearningRa
 from tensorflow.keras.optimizers import Adam
 
 #%%
-
-dataframe = pd.read_csv("./data/datainfo.csv") 
+#
+#./data/datainfo.csv
+dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv") 
 
 #%%
 
-classes =  dataframe.columns[1:].values.tolist()
+#classes =  dataframe.columns[1:].values.tolist()
+
+classes = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14']
 
 batch_size = 4
-color_mode = 'grayscale'  # "grayscale", "rgb", "rgba"
+color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
 img_directory_path = "/Users/Andres/Desktop/images/"
 target_size = (224, 224)
 
@@ -78,7 +81,7 @@ def createmodel():
 
     model = Sequential()
     
-    input_shape=(224,224,1)
+    input_shape=(224,224,3)
     
     model.add(tf.keras.applications.DenseNet121(include_top=False,
                                               #weights=None,
@@ -121,9 +124,9 @@ mc = ModelCheckpoint(checkpoint_path,
                      save_best_only=True, 
                      mode='min')
 
-history = model.fit(train_set,steps_per_epoch=train_steps,
+history = model.fit(train_set,steps_per_epoch=3,
                                    validation_data=valid_set,
-                                   validation_steps=valid_steps,
+                                   validation_steps=3,
                                    epochs=50,verbose=1,callbacks=[es,mc,lr])
 
 #%%
