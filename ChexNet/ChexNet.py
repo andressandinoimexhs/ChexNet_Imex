@@ -31,14 +31,21 @@ dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv")
 
 classes = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14']
 
+<<<<<<< Updated upstream
 batch_size = 4
 color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
 img_directory_path = "/Users/Andres/Desktop/images/"
+=======
+batch_size = 8
+color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
+img_directory_path = "/home/usuario/Descargas/images/"
+>>>>>>> Stashed changes
 target_size = (224, 224)
 
+validation_split=0.3
 
-train_datagen = ImageDataGenerator(rescale=1./255,validation_split=0.4)
-valid_datagen = ImageDataGenerator(rescale=1./255,validation_split=0.4)
+train_datagen = ImageDataGenerator(rescale=1./255,validation_split=validation_split)
+valid_datagen = ImageDataGenerator(rescale=1./255,validation_split=validation_split)
 
 
 train_set = train_datagen.flow_from_dataframe(
@@ -84,8 +91,8 @@ def createmodel():
     input_shape=(224,224,3)
     
     model.add(tf.keras.applications.DenseNet121(include_top=False,
-                                              #weights=None,
-                                              weights='imagenet',
+                                              weights=None,
+                                              #weights='imagenet',
                                               input_tensor=None,
                                               input_shape=(224, 224, 3),
                                               pooling='max',
@@ -112,7 +119,7 @@ BinaryCrossEnt=tf.keras.metrics.BinaryCrossentropy()
 
 model.compile(optimizer=optimizer, 
               loss = 'binary_crossentropy', 
-              metrics=['accuracy',BinaryCrossEnt])
+              metrics=[BinaryCrossEnt])
 
 
 checkpoint_path = 'C:/Users/Andres/Desktop/modelo.h5'
@@ -124,15 +131,23 @@ mc = ModelCheckpoint(checkpoint_path,
                      save_best_only=True, 
                      mode='min')
 
+<<<<<<< Updated upstream
 history = model.fit(train_set,steps_per_epoch=3,
                                    validation_data=valid_set,
                                    validation_steps=3,
                                    epochs=50,verbose=1,callbacks=[es,mc,lr])
+=======
+#%%
+import numpy as np
+history = model.fit(np.asarray(train_set).astype(np.float32),
+                    steps_per_epoch=4,epochs=50,verbose=1)
+>>>>>>> Stashed changes
 
 #%%
 
-aa=train_batches[0][0]
-bb=train_batches[0][1]
+aa=train_set[0][0]
+bb=train_set[0][1]
+plt.imshow(jj[0,:,:,:])
 truelabel=bb[0]
 jj=aa[:1,:,:,:]
 ll=model.predict(jj)
