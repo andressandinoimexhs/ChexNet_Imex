@@ -20,6 +20,8 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint,LearningRateScheduler
 from tensorflow.keras.optimizers import Adam
 
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
 #%%
 #
 #./data/datainfo.csv
