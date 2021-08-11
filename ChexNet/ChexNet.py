@@ -21,15 +21,18 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint,LearningRa
 from tensorflow.keras.optimizers import Adam
 
 #%%
-
-dataframe = pd.read_csv("C:/Users/Andres/Desktop/datainfo.csv") 
+#
+#./data/datainfo.csv
+dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv") 
 
 #%%
 
-classes =  dataframe.columns[1:].values.tolist()
+#classes =  dataframe.columns[1:].values.tolist()
 
-batch_size = 16
-color_mode = 'rgb'  # rgb 
+classes = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14']
+
+batch_size = 4
+color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
 img_directory_path = "/Users/Andres/Desktop/images/"
 target_size = (224, 224)
 
@@ -49,7 +52,8 @@ train_set = train_datagen.flow_from_dataframe(
     batch_size=batch_size,
     subset='training',
     shuffle='False',
-    seed=1
+    seed=1,
+    validate_filenames=True,
     )
 
 
@@ -64,9 +68,9 @@ valid_set = valid_datagen.flow_from_dataframe(
     batch_size=batch_size,
     subset='validation',
     shuffle='False',
-    seed=1
+    seed=1,
+    validate_filenames=True,
     )
-
 
 train_steps=train_set.samples//train_set.batch_size
 valid_steps=train_set.samples//train_set.batch_size
@@ -96,13 +100,13 @@ model = createmodel()
 #%%
 
 def step_decay(epoch):
-	initial_lrate = 1e-4
+	initial_lrate = 1e-3
 	drop = 0.1
 	epochs_drop = 50
 	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
 	return lrate
 
-optimizer = Adam(1e-4) # 1e-5
+optimizer = Adam(1e-3) # 1e-5
 
 BinaryCrossEnt=tf.keras.metrics.BinaryCrossentropy()
 
@@ -120,35 +124,10 @@ mc = ModelCheckpoint(checkpoint_path,
                      save_best_only=True, 
                      mode='min')
 
-history = model.fit(train_set,steps_per_epoch=train_steps,
+history = model.fit(train_set,steps_per_epoch=3,
                                    validation_data=valid_set,
-                                   validation_steps=valid_steps,
+                                   validation_steps=3,
                                    epochs=50,verbose=1,callbacks=[es,mc,lr])
-
-#%%
-
-# optimizer = Adam(1e-4) # 1e-5
-# model.compile(optimizer=optimizer, loss = 'categorical_crossentropy', metrics=['accuracy'])
-
-# epochs=80
-
-# checkpoint_path = dir + 'best_model' + Exp + '.h5'
-# es = EarlyStopping(patience=80,mode='min', verbose=1)
-# #mc = ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1 , save_best_only=True, mode='min')
-
-# mc = ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1 , save_best_only=True, mode='min', period=4)
-
-
-
-
-
-# optimizer = Adam(1e-4)
-# model.compile(optimizer=optimizer, 
-#               loss = 'binary_crossentropy', 
-#               metrics=['accuracy'])
-
-# history = model.fit_generator(train_batches,steps_per_epoch=2,
-#                               epochs=3,verbose=1)
 
 #%%
 

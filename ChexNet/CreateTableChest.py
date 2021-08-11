@@ -9,7 +9,7 @@ import csv
 import pandas as pd
 import numpy as np
 
-path='C:/Users/Andres/Desktop/Data_Entry_2017_v2020.csv'
+path='C:/Users/Andres/Documents/ProyectoInvestigacion/DL_Projects/ChexNet/data/Data_Entry_2017_v2020.csv'
 #csv_reader = csv.reader(path)
 df = pd.read_csv(path)
 
@@ -84,6 +84,7 @@ def binarizelabel(valor):
     
     #labelmax = np.int16(np.zeros((1,14)))
     labelmax = np.zeros((1,14))
+    #print(type(labelmax))
     
    
     for thlab,ind in zip(thoraxlabels,range(len(thoraxlabels))):
@@ -106,8 +107,8 @@ nq =  pd.DataFrame(columns = ['filename', 'A1','A2','A3',
                                    'A13','A14'])
 kk=""
 pepito=[]
-for i in tqdm(range(len(labels))):
-#for i in tqdm(range(0,1000)):
+#for i in tqdm(range(len(labels))):
+for i in tqdm(range(0,4000)):
     
     ll=[]
     label = df['Finding Labels'][i]  
