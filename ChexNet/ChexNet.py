@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 Created on Tue Aug 10 15:02:57 2021
-
 @author: Andres Sandino
 e-mail: asandino@unal.edu.co
+
 """
 
 import tensorflow as tf
