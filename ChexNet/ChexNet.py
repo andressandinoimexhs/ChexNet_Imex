@@ -25,7 +25,7 @@ from tensorflow.keras.optimizers import Adam
 #./data/datainfo.csv
 
 
-dataframe = pd.read_csv("/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/file_name.csv") 
+dataframe = pd.read_csv("/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/datainfo.csv") 
 
 #%%
 
@@ -33,10 +33,10 @@ dataframe = pd.read_csv("/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data
 
 classes = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14']
 
-batch_size = 8
+batch_size = 16
 color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
 img_directory_path = "/home/usuario/Descargas/images/"
->>>>>>> Stashed changes
+
 target_size = (224, 224)
 
 validation_split=0.3
@@ -119,7 +119,7 @@ model.compile(optimizer=optimizer,
               metrics=[BinaryCrossEnt])
 
 
-checkpoint_path = 'C:/Users/Andres/Desktop/modelo.h5'
+checkpoint_path = '/home/usuario/Descargas/modelo.h5'
 lr = LearningRateScheduler(step_decay)
 es = EarlyStopping(patience=100,mode='min', verbose=1)
 mc = ModelCheckpoint(checkpoint_path, 
@@ -128,17 +128,11 @@ mc = ModelCheckpoint(checkpoint_path,
                      save_best_only=True, 
                      mode='min')
 
-<<<<<<< Updated upstream
-history = model.fit(train_set,steps_per_epoch=3,
+history = model.fit(train_set,steps_per_epoch=train_steps,
                                    validation_data=valid_set,
-                                   validation_steps=3,
+                                   validation_steps=valid_steps,
                                    epochs=50,verbose=1,callbacks=[es,mc,lr])
-=======
-#%%
-import numpy as np
-history = model.fit(np.asarray(train_set).astype(np.float32),
-                    steps_per_epoch=4,epochs=50,verbose=1)
->>>>>>> Stashed changes
+
 
 #%%
 

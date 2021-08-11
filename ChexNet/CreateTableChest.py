@@ -9,7 +9,7 @@ import csv
 import pandas as pd
 import numpy as np
 
-path='C:/Users/Andres/Documents/ProyectoInvestigacion/DL_Projects/ChexNet/data/Data_Entry_2017_v2020.csv'
+path='/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/Data_Entry_2017_v2020.csv'
 #csv_reader = csv.reader(path)
 df = pd.read_csv(path)
 
@@ -107,8 +107,8 @@ nq =  pd.DataFrame(columns = ['filename', 'A1','A2','A3',
                                    'A13','A14'])
 kk=""
 pepito=[]
-#for i in tqdm(range(len(labels))):
-for i in tqdm(range(0,4000)):
+for i in tqdm(range(len(labels))):
+#for i in tqdm(range(0,4000)):
     
     ll=[]
     label = df['Finding Labels'][i]  
@@ -128,7 +128,7 @@ for i in tqdm(range(0,4000)):
     nq = nq.append(ll,ignore_index=True)
 
 #%%     
-nq.to_csv('C:/Users/Andres/Desktop/file_name.csv')
+nq.to_csv('/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/dataframe.csv')
 print("Fin del proceso")
 
 #np.savetxt('C:/Users/Andres/Desktop/np.txt', df.values, fmt='%d')                 
