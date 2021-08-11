@@ -23,7 +23,9 @@ from tensorflow.keras.optimizers import Adam
 #%%
 #
 #./data/datainfo.csv
-dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv") 
+
+
+dataframe = pd.read_csv("/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/file_name.csv") 
 
 #%%
 
@@ -31,11 +33,6 @@ dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv")
 
 classes = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14']
 
-<<<<<<< Updated upstream
-batch_size = 4
-color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
-img_directory_path = "/Users/Andres/Desktop/images/"
-=======
 batch_size = 8
 color_mode = 'rgb'  # "grayscale", "rgb", "rgba"
 img_directory_path = "/home/usuario/Descargas/images/"
