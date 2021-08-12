@@ -21,11 +21,10 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint,LearningRa
 from tensorflow.keras.optimizers import Adam
 
 #%%
-#
-#./data/datainfo.csv
+
 dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv") 
 
-#%%
+
 """
     A1: "Atelectasis"
     A2: "Cardiomegaly"
