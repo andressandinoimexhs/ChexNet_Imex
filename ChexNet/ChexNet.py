@@ -14,6 +14,8 @@ import math
 
 import pandas as pd
 
+
+from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import Sequential,datasets, layers, models
 from tensorflow.keras.layers import Dense
@@ -21,8 +23,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint,LearningRa
 from tensorflow.keras.optimizers import Adam
 
 #%%
-
-dataframe = pd.read_csv("C:/Users/Andres/Desktop/file_name.csv") 
+path2='C:/Users/Andres/Documents/ProyectoInvestigacion/DL_Projects/ChexNet/data/'
+dataframe = pd.read_csv(path2 + "datainfo.csv") 
 
 
 """
@@ -101,19 +103,58 @@ def createmodel():
     
     input_shape=(224,224,3)
     
-    model.add(tf.keras.applications.DenseNet121(include_top=False,
+    model.add(tf.keras.applications.DenseNet121(include_top=True,
                                               #weights=None,
-                                              weights='imagenet',
+                                              weights='C:/Users/Andres/Desktop/brucechou1983_CheXNet_Keras_0.3.0_weights.h5',
                                               input_tensor=None,
                                               input_shape=(224, 224, 3),
                                               pooling='max',
-                                              classes=2,))
+                                              classes=14,))
     
-    model.add(Dense(14,activation='sigmoid'))
+    #model.add(Dense(14,activation='sigmoid'))
     model.summary()
     return model
 
 model = createmodel()
+
+#%%
+
+mdl = Sequential()
+mdl2 =  Sequential()
+# kk = Sequential()
+
+kk=model.layers[0]
+#kk.add(Dense(14,activation='softmax',name='Output'))
+x=kk.layers[0]
+
+
+x=kk.layers[1](x)
+
+for i in range(0,100): 
+    x=kk.layers[i](x)
+
+#mdl.summary()
+
+#mdl.load_weights('C:/Users/Andres/Desktop/brucechou1983_CheXNet_Keras_0.3.0_weights.h5')
+#%%
+mdl = model.layers[0]
+numlayers=len(mdl.layers)
+SplitModel=Model(inputs=mdl.input, outputs=mdl.layers[numlayers-1].output)
+
+#%%
+
+input_img = Input(shape=(224, 224, 3),name='Input')
+out_SplitModel = SplitModel(input_img)
+
+output = Dense(14,activation='softmax',name='Output')(out_SplitModel)
+
+model2 = Model(input_img, output)
+
+model2.summary()
+
+#%%
+#new_model = load_model('C:/Users/Andres/Desktop/brucechou1983_CheXNet_Keras_0.3.0_weights.h5')
+kk.load_weights('C:/Users/Andres/Desktop/brucechou1983_CheXNet_Keras_0.3.0_weights.h5')
 
 #%%
 
@@ -149,8 +190,9 @@ history = model.fit(train_set,steps_per_epoch=3,
 
 #%%
 
-aa=train_batches[0][0]
-bb=train_batches[0][1]
+
+aa=train_set[0][0]
+bb=train_set[0][1]
 truelabel=bb[0]
 jj=aa[:1,:,:,:]
 ll=model.predict(jj)
