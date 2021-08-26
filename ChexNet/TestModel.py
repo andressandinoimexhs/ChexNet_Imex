@@ -139,7 +139,7 @@ cam = cv.resize(cam, im.shape[:2])
 
 heatmap = cv.applyColorMap(np.uint8(255 * cam), cv.COLORMAP_JET)
 heatmap[np.where(cam < 0.2)] = 0
-img_out = heatmap * 0.1+ im
+img_out = heatmap * 0.15+ im
 
 # ratio = 1
 # x1 = int(df_g["x"] * ratio)
