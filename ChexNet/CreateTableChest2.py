@@ -50,7 +50,7 @@ def createrowtable(name,valor):
     df2 =  pd.DataFrame(columns = ['filename', 'A1','A2','A3',
                                    'A4','A5','A6','A7','A8',
                                    'A9','A10','A11','A12',
-                                   'A13','A14'])
+                                   'A13','A14','A15'])
     
     df2 = df2.append({'filename' : name,
                      'A1' : binarylabel[0][0], 
@@ -67,6 +67,7 @@ def createrowtable(name,valor):
                      'A12' : binarylabel[0][11],
                      'A13' : binarylabel[0][12],
                      'A14' : binarylabel[0][13],
+                     'A15' : binarylabel[0][14],
                      }, 
                     ignore_index = True)
     return df2
@@ -80,10 +81,10 @@ def binarizelabel(valor):
                     "Mass","Nodule","Pneumonia",
                     "Pneumothorax","Consolidation",
                     "Edema","Emphysema","Fibrosis",
-                    "Pleural_Thickening","Hernia"]
+                    "Pleural_Thickening","Hernia","No Finding"]
     
     #labelmax = np.int16(np.zeros((1,14)))
-    labelmax = np.zeros((1,14))
+    labelmax = np.zeros((1,15))
     #print(type(labelmax))
     
    
@@ -104,11 +105,11 @@ from tqdm import tqdm
 nq =  pd.DataFrame(columns = ['filename', 'A1','A2','A3',
                                    'A4','A5','A6','A7','A8',
                                    'A9','A10','A11','A12',
-                                   'A13','A14'])
+                                   'A13','A14','A15'])
 kk=""
 pepito=[]
-for i in tqdm(range(len(labels))):
-#for i in tqdm(range(0,4000)):
+#for i in tqdm(range(len(labels))):
+for i in tqdm(range(0,10)):
     
     ll=[]
     label = df['Finding Labels'][i]  
