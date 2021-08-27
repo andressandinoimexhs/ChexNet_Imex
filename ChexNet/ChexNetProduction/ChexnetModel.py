@@ -15,12 +15,11 @@ from AbstractProducts import load_mdl_lungsegmentation,load_mdl_infsegmentation
 from seg_utils import create_segmentations
 
 #%%
-class LungInfectionModel():
+class ChexnetModel():
 
-    def __init__(self,mdl1,mdl2):
+    def __init__(self,mdl1):
         
         self.mdl1=mdl1
-        self.mdl2=mdl2
         
     def run_preprocessing(self, dcm_img):
         
@@ -113,64 +112,64 @@ Prueba del modelo de segmentación de ggo + cons
 origpath = 'C:/Users/Andres/Desktop/SementacionesDicom/Patient4/'
 listfiles = os.listdir(origpath)
 
-mdl=LungInfectionModel(load_mdl_lungsegmentation(),load_mdl_infsegmentation())
+# mdl=LungInfectionModel(load_mdl_lungsegmentation(),load_mdl_infsegmentation())
 
-segmentation=[]
+# segmentation=[]
 
-from time import time
-start_time = time() 
+# from time import time
+# start_time = time() 
 
-for i in range(len(listfiles)):
-#for i in range(50,51):
+# for i in range(len(listfiles)):
+# #for i in range(50,51):
     
-    dcmfilename = listfiles[i]
+#     dcmfilename = listfiles[i]
     
-    dcm_img = dicom.dcmread(origpath+dcmfilename)
+#     dcm_img = dicom.dcmread(origpath+dcmfilename)
     
-    [norm_img, ins_num,dcm_originalsize]=mdl.run_preprocessing(dcm_img)
-    pred_mask=mdl.run_prediction(norm_img,dcm_originalsize)
+#     [norm_img, ins_num,dcm_originalsize]=mdl.run_preprocessing(dcm_img)
+#     pred_mask=mdl.run_prediction(norm_img,dcm_originalsize)
     
    
-    imor_res=cv.resize(norm_img,(dcm_originalsize[1],dcm_originalsize[0]),
-              interpolation = cv.INTER_AREA)
+#     imor_res=cv.resize(norm_img,(dcm_originalsize[1],dcm_originalsize[0]),
+#               interpolation = cv.INTER_AREA)
     
     
     
-    plt.show()
-    plt.subplot(1,2,1)
-    plt.imshow(pred_mask,cmap='gray')
-    plt.axis('off')
-    plt.subplot(1,2,2)
-    plt.imshow(imor_res,cmap='gray')
-    plt.axis('off')
-    print('Instace number: '+ str(i))
+#     plt.show()
+#     plt.subplot(1,2,1)
+#     plt.imshow(pred_mask,cmap='gray')
+#     plt.axis('off')
+#     plt.subplot(1,2,2)
+#     plt.imshow(imor_res,cmap='gray')
+#     plt.axis('off')
+#     print('Instace number: '+ str(i))
     
-#     segmentation.append(pred_mask)
+# #     segmentation.append(pred_mask)
 
-# segmentation=np.array(segmentation,dtype=np.uint8)
+# # segmentation=np.array(segmentation,dtype=np.uint8)
 
-elapsed_time = time() - start_time 
-print(elapsed_time)
+# elapsed_time = time() - start_time 
+# print(elapsed_time)
 
-minutes=np.round(np.floor(elapsed_time/60),0)
-seconds=np.round((elapsed_time/60-minutes)*60,0)
-print(str(minutes)+' minutes '+ str(seconds) + ' seconds ')
+# minutes=np.round(np.floor(elapsed_time/60),0)
+# seconds=np.round((elapsed_time/60-minutes)*60,0)
+# print(str(minutes)+' minutes '+ str(seconds) + ' seconds ')
 
-#%%
-def extract_mask(mask, value):
-    array_mask = mask.copy()
-    array_mask = np.array(array_mask == value, dtype=np.uint8)
-    return array_mask
+# #%%
+# def extract_mask(mask, value):
+#     array_mask = mask.copy()
+#     array_mask = np.array(array_mask == value, dtype=np.uint8)
+#     return array_mask
 
-lung_mask = extract_mask(segmentation, 1)
-ground_glass_mask = extract_mask(segmentation, 2)
-consolidation_mask = extract_mask(segmentation, 3)
+# lung_mask = extract_mask(segmentation, 1)
+# ground_glass_mask = extract_mask(segmentation, 2)
+# consolidation_mask = extract_mask(segmentation, 3)
 
-#%%
+# #%%
     
-metadata = "meta.json"
+# metadata = "meta.json"
 
-dest_folder='C:/Users/Andres/Desktop/SementacionesDicom/'
+# dest_folder='C:/Users/Andres/Desktop/SementacionesDicom/'
 
-create_segmentations([lung_mask,ground_glass_mask,consolidation_mask],
-                     metadata,origpath,dest_folder)
+# create_segmentations([lung_mask,ground_glass_mask,consolidation_mask],
+#                      metadata,origpath,dest_folder)
