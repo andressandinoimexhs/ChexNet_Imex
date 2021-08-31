@@ -7,94 +7,45 @@ import cv2 as cv
 import os
 import pydicom as dicom
 
-from LungInfectionUtils import dcm_convert,getprepareimgCNN
-from LungInfectionUtils import dcm_size,dcm_imresize
-from LungInfectionUtils import getsmoothmask,getRoImask
-from LungInfectionConstantManager import WinLength,WinWidth,imgnormsize
-from AbstractProducts import load_mdl_lungsegmentation,load_mdl_infsegmentation
-from seg_utils import create_segmentations
+from AbstractProducts import load_mdl_chexnet
+from ChexnetUtils import gradcam
+from GenerateReport import GenerateReportClass 
+
+
+# from seg_utils import create_segmentations
 
 #%%
 class ChexnetModel():
 
-    def __init__(self,mdl1):
+    def __init__(self,mdl):
         
-        self.mdl1=mdl1
-        
-    def run_preprocessing(self, dcm_img):
-        
-        [norm_img, ins_num] = dcm_convert(dcm_img,WinLength,WinWidth)    
-        dcm_originalsize = dcm_size(dcm_img)
-        
-        return norm_img, ins_num, dcm_originalsize
-         
-    def run_prediction(self,inputimg,targetsize):
-        
-        scale=4
-        inputCNNimg=getprepareimgCNN(inputimg,scale)
-        
-        # Segmentación de pulmón (lng)
-        LngSegmentatioMask = self.mdl1.predict(inputCNNimg)
-        
-        kernel = cv.getStructuringElement(cv.MORPH_RECT, (3,3))        
-        cropmask = cv.morphologyEx(np.round(LngSegmentatioMask[0,:,:,0]), 
-                                   cv.MORPH_CLOSE, kernel)        
-        cropmask = cv.morphologyEx(np.round(cropmask), cv.MORPH_ERODE, kernel)
-
-        LngSegmentatioMask = getsmoothmask(cropmask)
-        
-        # TAmaño de la imagen 512x512
-        CroppedLng = np.zeros((imgnormsize[0],imgnormsize[1],3))
-        
-        # Selecciona la RoI (Lng)
-        for i in range(3):
-            CroppedLng[:,:,i] = inputimg[:,:,i]*LngSegmentatioMask
+        self.mdl=mdl
             
-        scale=4
-        LngCNNimg=getprepareimgCNN(CroppedLng,scale)
-        
-        # Segmentación de vidrio esmerilado y consolidacion (ggo + cons)
-        PredictedLngInfMask = self.mdl2.predict(LngCNNimg)
-        PredictedLngInf = np.squeeze(PredictedLngInfMask,axis=0)
-        PredictedLngInfMask = np.argmax(PredictedLngInf,axis=-1)
+    def run_preprocessing(self,batch_x):
+    
+        batch_x = cv.resize(batch_x, (224,224))    
+        batch_x = np.asarray(batch_x/255)
+        imagenet_mean = np.array([0.485, 0.456, 0.406])
+        imagenet_std = np.array([0.229, 0.224, 0.225])
+        batch_x = (batch_x - imagenet_mean) / imagenet_std
 
-        # El tamaño es de 128x128 pix
-        LngMask = np.zeros((np.shape(PredictedLngInfMask)[0],
-                            np.shape(PredictedLngInfMask)[1]))
-        
-        # Mascara de segmentación de Pulmón 
-        LngMask[PredictedLngInfMask!=2]=1
-        LngMask = getsmoothmask(LngMask)
-        
-        # Mascara de segmentación ggo+con
-        LngInfMask=np.uint16(PredictedLngInf[:,:,0]>0.5)
-        LngInfMask = getsmoothmask(LngInfMask)
+        return batch_x
 
-        # Selecciona la RoI (ggo+cons)        
-        CroppedLngInf = LngInfMask*inputimg[:,:,0]
-        
-        # Lung
-        lngRoIMask = getRoImask(CroppedLngInf,60,90)
-        lngRoIMask = getsmoothmask(np.int16(lngRoIMask))
-        
-        # Ggo
-        ggoRoIMask = getRoImask(CroppedLngInf,90,170)
-        ggoRoIMask = getsmoothmask(np.int16(ggoRoIMask))
-        
-        # Cons
-        conRoIMask = getRoImask(CroppedLngInf,170,255)
-        conRoIMask = getsmoothmask(np.int16(conRoIMask))
 
-        PredictedMaskMulti=LngMask.copy()
+    def run_prediction(self,img):
         
-        for mask,label in zip((lngRoIMask,ggoRoIMask,conRoIMask),range(1,4)):
-            PredictedMaskMulti[mask==1]=label
-            
-        PredictedMaskMulti=cv.resize(PredictedMaskMulti,
-                                     (targetsize[1],targetsize[0]),
-                                     interpolation = cv.INTER_AREA)
+        #patient_info = patient_info
+        
+        img_trans = self.run_preprocessing(img)
+        img_trans2 = np.expand_dims(img_trans,axis=0)
+        prediction = self.mdl.predict(img_trans2)
+        prediction = np.squeeze(prediction,axis=0)
+        
+        im_heatmap=gradcam(self.mdl,img,img_trans2)
+        
+        #report(patient_info,prediction)
 
-        return PredictedMaskMulti
+        return prediction
 
     def run_evaluation(self):
         pass
@@ -102,74 +53,39 @@ class ChexnetModel():
     def run_training(self):
         pass
 
-#%% 
+#%% Prueba
 
-"""
-Prueba del modelo de segmentación de ggo + cons
+mdl=ChexnetModel(load_mdl_chexnet())
 
-"""
+#%%
+imgdir = "C:/Users/Andres/Desktop/images/"
 
-origpath = 'C:/Users/Andres/Desktop/SementacionesDicom/Patient4/'
-listfiles = os.listdir(origpath)
+numfile = 1
+listimgfile = os.listdir(imgdir)
+imgfile = os.path.join(imgdir,listimgfile[numfile])
 
-# mdl=LungInfectionModel(load_mdl_lungsegmentation(),load_mdl_infsegmentation())
+img = cv.imread(imgfile)
 
-# segmentation=[]
+plt.imshow(img,cmap='gray')
+plt.axis('off')
+plt.title(listimgfile[numfile])
 
-# from time import time
-# start_time = time() 
+prediction2 = mdl.run_prediction(img)
 
-# for i in range(len(listfiles)):
-# #for i in range(50,51):
-    
-#     dcmfilename = listfiles[i]
-    
-#     dcm_img = dicom.dcmread(origpath+dcmfilename)
-    
-#     [norm_img, ins_num,dcm_originalsize]=mdl.run_preprocessing(dcm_img)
-#     pred_mask=mdl.run_prediction(norm_img,dcm_originalsize)
-    
-   
-#     imor_res=cv.resize(norm_img,(dcm_originalsize[1],dcm_originalsize[0]),
-#               interpolation = cv.INTER_AREA)
-    
-    
-    
-#     plt.show()
-#     plt.subplot(1,2,1)
-#     plt.imshow(pred_mask,cmap='gray')
-#     plt.axis('off')
-#     plt.subplot(1,2,2)
-#     plt.imshow(imor_res,cmap='gray')
-#     plt.axis('off')
-#     print('Instace number: '+ str(i))
-    
-# #     segmentation.append(pred_mask)
+# Metadata
+patient_name = "Pepito Perez"
+ID = '102234'
+genre = 'F'
+date = '02/02/02'
+study_name = 'CHEST CT'
+study_date = '01/01/01'
+region = 'US' # or US
+report='This report was automaticaly generated by theStella services. At least one patology pattern was indentified in this study. The heatmap overlead on the image represeted the area with the AI considered to do the automatic evaluation.'
+report = report +report
 
-# # segmentation=np.array(segmentation,dtype=np.uint8)
+report=GenerateReportClass(patient_name, ID, genre,date,study_name,study_date,report,prediction2,region)
+report.generate_pdf()
 
-# elapsed_time = time() - start_time 
-# print(elapsed_time)
+print("el reporte ha sido generado con exito")
+#zz.generate_pdf()
 
-# minutes=np.round(np.floor(elapsed_time/60),0)
-# seconds=np.round((elapsed_time/60-minutes)*60,0)
-# print(str(minutes)+' minutes '+ str(seconds) + ' seconds ')
-
-# #%%
-# def extract_mask(mask, value):
-#     array_mask = mask.copy()
-#     array_mask = np.array(array_mask == value, dtype=np.uint8)
-#     return array_mask
-
-# lung_mask = extract_mask(segmentation, 1)
-# ground_glass_mask = extract_mask(segmentation, 2)
-# consolidation_mask = extract_mask(segmentation, 3)
-
-# #%%
-    
-# metadata = "meta.json"
-
-# dest_folder='C:/Users/Andres/Desktop/SementacionesDicom/'
-
-# create_segmentations([lung_mask,ground_glass_mask,consolidation_mask],
-#                      metadata,origpath,dest_folder)
