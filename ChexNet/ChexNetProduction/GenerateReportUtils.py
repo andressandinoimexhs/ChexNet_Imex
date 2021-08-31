@@ -63,12 +63,13 @@ def generate_pdftemplate(patient_name,
     
     pdf.set_font('Arial', 'BU',28)
     pdf.set_text_color(32, 32,91)
-    pdf.set_fill_color(173, 197, 231)
-    
+    #pdf.set_fill_color(173, 197, 231)
+    pdf.set_fill_color(173, 197, 250)
     pdf.cell(18, 1.5, 'Chest X-RAY Report', 0, 0,'C', fill=1)
     pdf.set_font('Arial', '', 12)
     
     pdf.ln(2)
+    pdf.set_font('Arial', 'B', 14)
     pdf.cell(18, 0.5,'Patient information',align='C',border=0)
     
     pdf.ln(0.5)
@@ -76,6 +77,7 @@ def generate_pdftemplate(patient_name,
     
     pdf.ln(0.7)
     
+    pdf.set_font('Arial', '', 12)
     pdf.cell(5, 0.5,'ID',align='C',border=border)
     
     x_position = pdf.x
@@ -106,6 +108,7 @@ def generate_pdftemplate(patient_name,
     pdf.x = x_position
     pdf.cell(4, 0.5,genre,align='C',border=border)
     
+    pdf.set_font('Arial', 'B', 14)
     pdf.set_text_color(32, 32,91)
     pdf.ln(1)
     pdf.cell(18, 0.5,'Study Information',align='C',border=border)
@@ -113,6 +116,7 @@ def generate_pdftemplate(patient_name,
     pdf.line(pdf.x, pdf.y, pdf.x+18, pdf.y)
     
     #pdf.ln(0.5)
+    pdf.set_font('Arial', '', 12)
     pdf.cell(18, 0.5,'',align='C',border=border)
     pdf.ln(0.5)
     
