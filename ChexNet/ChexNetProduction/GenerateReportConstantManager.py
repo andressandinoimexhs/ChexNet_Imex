@@ -1,6 +1,5 @@
 import numpy as np
 
-
 """
 Constants for GenerateReportUtils.py
 """

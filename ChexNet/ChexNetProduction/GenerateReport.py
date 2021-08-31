@@ -4,6 +4,7 @@ from GenerateReportUtils import generate_pdftemplate,generate_predictedlabels
 class GenerateReportClass:
     
   def __init__(self, patient_name, ID, genre,date,study_name,study_date,report,predictions,region):
+    
     self.patient_name = patient_name
     self.ID = ID
     self.genre = genre

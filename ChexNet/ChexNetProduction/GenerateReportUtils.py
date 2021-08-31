@@ -52,7 +52,7 @@ def generate_pdftemplate(patient_name,
     label3 = predictionlist[4]
     pred3  = predictionlist[5]
     
-    border=1
+    border=0
     # 1. Set up the PDF doc basics
     pdf = FPDF('P', 'cm', 'Letter')
 

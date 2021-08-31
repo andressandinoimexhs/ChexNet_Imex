@@ -1,4 +1,3 @@
-
 from os import path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,7 +9,6 @@ import pydicom as dicom
 from AbstractProducts import load_mdl_chexnet
 from ChexnetUtils import gradcam
 from GenerateReport import GenerateReportClass 
-
 from ChexnetConstantManager import ImgSize, MaxIntensityValue,ImagenetMean,ImagenetStd
 
 class ChexnetModel():
@@ -67,7 +65,10 @@ class ChexnetModel():
     def run_training(self):
         pass
 
-#%% Prueba
+#%%
+"""
+PRUEBA DEL MODELO
+"""
 
 mdl=ChexnetModel(load_mdl_chexnet())
 
