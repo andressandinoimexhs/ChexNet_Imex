@@ -9,7 +9,7 @@ import csv
 import pandas as pd
 import numpy as np
 
-path='/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/Data_Entry_2017_v2020.csv'
+path='./data/Data_Entry_2017_v2020.csv'
 #csv_reader = csv.reader(path)
 df = pd.read_csv(path)
 
