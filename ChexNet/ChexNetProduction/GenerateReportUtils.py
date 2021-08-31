@@ -8,20 +8,35 @@ from GenerateReportConstantManager import Path_TemplateUS, Path_TemplateLATAM, P
 
 
 def generate_predictedlabels(prediction):
-        
+    
+    """
+    Sorted predicted labels from highest to lowest prediction values
+    """
+    
+    # Create dataframe two colums (Labels,Predictions)
     ThoraxDataFrame=pd.DataFrame(columns=['Labels','Predictions'])
+    
+    # Colum1: Labels
     ThoraxDataFrame['Labels'] = thoraxlabels
+    
+    # Colum2: Predictions
     ThoraxDataFrame['Predictions'] = prediction
+    
+    # Sort from highest to lowest prediction values
     ThoraxDataFrame.sort_values(by=['Predictions'],
                                 ascending=False)
     
+    # Subsetting the first three values
     ThoraxDataFrameSubset = ThoraxDataFrame.iloc[:3]
     Sort_ThoraxDataFrame = ThoraxDataFrameSubset.sort_values(by=['Predictions'],
                                                              ascending=False)
     
-    LabelList=[]
-    PredictionList=[]
-
+    
+    # Predictions and labels organized in a short list
+    
+    LabelList = []
+    PredictionList = []
+    
     for i in range(3):
     
         Label = Sort_ThoraxDataFrame.iloc[i][0]
@@ -45,6 +60,8 @@ def generate_pdftemplate(patient_name,
                          report,
                          predictionlist):
     
+    # Predictions and labels organized in a short list
+    
     label1 = predictionlist[0]
     pred1  = predictionlist[1]
     label2 = predictionlist[2]
@@ -56,7 +73,10 @@ def generate_pdftemplate(patient_name,
     # 1. Set up the PDF doc basics
     pdf = FPDF('P', 'cm', 'Letter')
 
+    # Adding new page
     pdf.add_page()
+    
+    # Set up document margins
     pdf.set_left_margin(1.5)
 
     pdf.ln(2)
@@ -161,6 +181,10 @@ def generate_pdftemplate(patient_name,
     pdf.multi_cell(10,0.7, txt=label2 + ": "+ pred2 ,align='L',border=border)
     pdf.multi_cell(10,0.7, txt=label3 + ": "+ pred3 ,align='L',border=border)
     
+    
+    """
+    Salida del reporte en pdf (Sin fondo)
+    """
     pdf.output(OutputPath_pdfreport, 'F')
     
     return 
@@ -177,13 +201,16 @@ def get_pdfreport(region):
         
         PdfBackground = PdfFileReader(Path_TemplateLATAM,'rb')
     
-    PdfBaseReport=PdfBaseReport.getPage(0)
-    PdfBackground=PdfBackground.getPage(0)
+    PdfBaseReport = PdfBaseReport.getPage(0)
+    PdfBackground = PdfBackground.getPage(0)
 
     PdfBaseReport.mergePage(PdfBackground)
     pdfOutput = PdfFileWriter()
     pdfOutput.addPage(PdfBaseReport)
     
+    """
+     Salida del reporte en pdf (Con fondo) [Path_OutputReportGenerated]
+    """
     pdfOutputFile = open(Path_OutputReportGenerated, 'wb')
     
     pdfOutput.write(pdfOutputFile)

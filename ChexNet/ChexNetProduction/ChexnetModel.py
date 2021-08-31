@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 
 import cv2 as cv
 import os
-import pydicom as dicom
 
 from AbstractProducts import load_mdl_chexnet
 from ChexnetUtils import gradcam
 from GenerateReport import GenerateReportClass 
-from ChexnetConstantManager import ImgSize, MaxIntensityValue,ImagenetMean,ImagenetStd
+from ChexnetConstantManager import ImgSize, MaxIntensityValue
+from ChexnetConstantManager import ImagenetMean,ImagenetStd
 
 class ChexnetModel():
    
@@ -55,7 +55,7 @@ class ChexnetModel():
         PredictionProbabilities = np.squeeze(Prediction,axis=0) # Create a 1-D vector
         
         # Heatmap building using gradcam function
-        ImgHeatmap=gradcam(self.mdl,ImgInput,PreprocessedImgExpand)
+        ImgHeatmap = gradcam(self.mdl,ImgInput,PreprocessedImgExpand)
 
         return PredictionProbabilities
 
