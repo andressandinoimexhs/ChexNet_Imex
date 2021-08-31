@@ -17,6 +17,7 @@ from GenerateReportUtils import generate_pdftemplate,get_pdfreport , generate_pd
 # report = report +report
 
 class GenerateReportClass:
+    
   def __init__(self, patient_name, ID, genre,date,study_name,study_date,report,predictions,region):
     self.patient_name = patient_name
     self.ID = ID
@@ -27,7 +28,6 @@ class GenerateReportClass:
     self.report = report
     self.predictions = predictions
     self.region = region
-    
 
   def generate_pdf(self):
       

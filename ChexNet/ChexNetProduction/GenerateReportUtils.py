@@ -9,34 +9,48 @@ from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
 import pandas as pd
 
 def generate_predictedlabels(prediction):
+    
+    thoraxlabels = ["Atelectasis",
+                    "Cardiomegaly",
+                    "Effusion",
+                    "Infiltration",
+                    "Mass",
+                    "Nodule",
+                    "Pneumonia",
+                    "Pneumothorax",
+                    "Consolidation",
+                    "Edema",
+                    "Emphysema",
+                    "Fibrosis",
+                    "Pleural_Thickening",
+                    "Hernia"]
+    
+    ThoraxDataFrame=pd.DataFrame(columns=['Labels','Predictions'])
+    ThoraxDataFrame['Labels'] = thoraxlabels
+    ThoraxDataFrame['Predictions'] = prediction
+    ThoraxDataFrame.sort_values(by=['Predictions'],
+                                ascending=False)
+    
+    ThoraxDataFrameSubset = ThoraxDataFrame.iloc[:3]
+    Sort_ThoraxDataFrame = ThoraxDataFrameSubset.sort_values(by=['Predictions'],
+                                                             ascending=False)
+    
+    LabelList=[]
+    PredictionList=[]
 
-    thoraxlabels = ["Atelectasis","Cardiomegaly",
-                    "Effusion","Infiltration",
-                    "Mass","Nodule","Pneumonia",
-                    "Pneumothorax","Consolidation",
-                    "Edema","Emphysema","Fibrosis",
-                    "Pleural_Thickening","Hernia"]
+    for i in range(3):
     
-    df=pd.DataFrame(columns=['Labels','Predictions'])
-    df['Labels'] = thoraxlabels
-    df['Predictions'] = prediction
-    df.sort_values(by=['Predictions'],ascending=False)
-    
-    df2 = df.iloc[:3]
-    df3=df2.sort_values(by=['Predictions'],ascending=False)
-    
-    label1 = df3.iloc[0][0]
-    pred1 = str(round(df3.iloc[0][1]*100,1))+" %"
-    
-    label2 = df3.iloc[1][0]
-    pred2 = str(round(df3.iloc[1][1]*100,1))+" %"
-    
-    label3 = df3.iloc[2][0]
-    pred3 = str(round(df3.iloc[2][1]*100,1))+" %"
-    
-    predlist = [label1,pred1,label2,pred2,label3,pred3]
-    
-    return predlist
+        Label = Sort_ThoraxDataFrame.iloc[i][0]
+        LabelList.append(Label)
+        Prediction = str(round(Sort_ThoraxDataFrame.iloc[i][1]*100,1))+" %"
+        PredictionList.append(Prediction)
+            
+    PredictionListOutput = [LabelList[0],PredictionList[0],
+                            LabelList[1],PredictionList[1],
+                            LabelList[2],PredictionList[2]]
+
+    return PredictionListOutput
+
 
 def generate_pdftemplate(patient_name,
                          ID,
@@ -54,14 +68,13 @@ def generate_pdftemplate(patient_name,
     label3 = predictionlist[4]
     pred3  = predictionlist[5]
     
-    border=0
+    border=1
     # 1. Set up the PDF doc basics
     pdf = FPDF('P', 'cm', 'Letter')
-    #pdf.open(,'')
-    #pdf.set_margins(0.5,1.5,2.5)
+
     pdf.add_page()
     pdf.set_left_margin(1.5)
-    #pdf.image('C:/Users/Andres/Desktop/latam.jpeg',x=0,y=0,w=21.59,h=27.94)
+
     pdf.ln(2)
     
     pdf.set_font('Arial', 'BU',28)
@@ -132,8 +145,7 @@ def generate_pdftemplate(patient_name,
     x_position = pdf.x
     pdf.x = x_position
     pdf.cell(5, 0.5,study_date,align='C',border=border)
-    
-    
+        
     pdf.ln(1)
     pdf.set_text_color(32, 32,91)
     pdf.set_font('Arial', 'B', 14)
@@ -143,11 +155,6 @@ def generate_pdftemplate(patient_name,
     pdf.ln(1)
     pdf.set_font('Arial', '', 10)
     pdf.multi_cell(10,0.7,report,align='L',border=border)
-    
-    # y_position = 10
-    # #pdf.y = y_position
-    # x_position = 15
-    #pdf.y = y_position
     
     pdf.image('./misc/thoraxheatmap.png',x=12,y=11,w=7.5,h=7.5)
     
@@ -172,30 +179,29 @@ def generate_pdftemplate(patient_name,
 
 def get_pdfreport(region):
     
-    
-    
-    pdf1Reader = PdfFileReader('./misc/fpdf_pdf_report.pdf','rb')
+    PdfBaseReport = PdfFileReader('./misc/fpdf_pdf_report.pdf','rb')
     
     if region=='US':
-        #US
-        pdf2Reader = PdfFileReader('./misc/IMEXHSUS.pdf','rb')
+    
+        PdfBackground = PdfFileReader('./misc/IMEXHSUS.pdf','rb')
     
     else:
-        pdf2Reader = PdfFileReader('./misc/IMEXHSLATAM.pdf','rb')
+        
+        PdfBackground = PdfFileReader('./misc/IMEXHSLATAM.pdf','rb')
     
-    aa=pdf1Reader.getPage(0)
-    bb=pdf2Reader.getPage(0)
-    
-    #pdfWriter = PdfFileWriter()
-    pdfWriter = PdfFileMerger()
-    aa.mergePage(bb)
-    output_pdf = PdfFileWriter()
-    output_pdf.addPage(aa)
+    PdfBaseReport=PdfBaseReport.getPage(0)
+    PdfBackground=PdfBackground.getPage(0)
+
+    PdfBaseReport.mergePage(PdfBackground)
+    pdfOutput = PdfFileWriter()
+    pdfOutput.addPage(PdfBaseReport)
     
     pdfOutputFile = open('./misc/OutputReport.pdf', 'wb')
-    output_pdf.write(pdfOutputFile)
+    
+    pdfOutput.write(pdfOutputFile)
     
     pdfOutputFile.close()
+    
     return
 
     

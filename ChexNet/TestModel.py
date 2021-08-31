@@ -160,29 +160,71 @@ cv.imwrite(output_path, img_out)
 
 #%%
 
-thoraxlabels = ["Atelectasis","Cardiomegaly",
-                "Effusion","Infiltration",
-                "Mass","Nodule","Pneumonia",
-                "Pneumothorax","Consolidation",
-                "Edema","Emphysema","Fibrosis",
-                "Pleural_Thickening","Hernia"]
+# thoraxlabels = ["Atelectasis","Cardiomegaly",
+#                 "Effusion","Infiltration",
+#                 "Mass","Nodule","Pneumonia",
+#                 "Pneumothorax","Consolidation",
+#                 "Edema","Emphysema","Fibrosis",
+#                 "Pleural_Thickening","Hernia"]
 
-df=pd.DataFrame(columns=['Labels','Predictions'])
-df['Labels'] = thoraxlabels
-df['Predictions'] = prediction
-df.sort_values(by=['Predictions'],ascending=False)
+# df=pd.DataFrame(columns=['Labels','Predictions'])
+# df['Labels'] = thoraxlabels
+# df['Predictions'] = prediction
+# df.sort_values(by=['Predictions'],ascending=False)
 
-df2 = df.iloc[:3]
-df3=df2.sort_values(by=['Predictions'],ascending=False)
+# df2 = df.iloc[:3]
+# df3=df2.sort_values(by=['Predictions'],ascending=False)
 
-label1 = df3.iloc[0][0]
-pred1 = str(round(df3.iloc[0][1]*100,1))+" %"
+# label1 = df3.iloc[0][0]
+# pred1 = str(round(df3.iloc[0][1]*100,1))+" %"
 
-label2 = df3.iloc[1][0]
-pred2 = str(round(df3.iloc[1][1]*100,1))+" %"
+# label2 = df3.iloc[1][0]
+# pred2 = str(round(df3.iloc[1][1]*100,1))+" %"
 
-label3 = df3.iloc[2][0]
-pred3 = str(round(df3.iloc[2][1]*100,1))+" %"
+# label3 = df3.iloc[2][0]
+# pred3 = str(round(df3.iloc[2][1]*100,1))+" %"
+
+#%%
+
+thoraxlabels = ["Atelectasis",
+                "Cardiomegaly",
+                "Effusion",
+                "Infiltration",
+                "Mass",
+                "Nodule",
+                "Pneumonia",
+                "Pneumothorax",
+                "Consolidation",
+                "Edema",
+                "Emphysema",
+                "Fibrosis",
+                "Pleural_Thickening",
+                "Hernia"]
+
+ThoraxDataFrame=pd.DataFrame(columns=['Labels','Predictions'])
+ThoraxDataFrame['Labels'] = thoraxlabels
+ThoraxDataFrame['Predictions'] = prediction
+ThoraxDataFrame.sort_values(by=['Predictions'],ascending=False)
+
+ThoraxDataFrameSubset = ThoraxDataFrame.iloc[:3]
+Sort_ThoraxDataFrame = ThoraxDataFrameSubset.sort_values(by=['Predictions'],ascending=False)
+
+LabelList=[]
+PredictionList=[]
+
+
+for i in range(3):
+
+    Label = Sort_ThoraxDataFrame.iloc[i][0]
+    LabelList.append(Label)
+    Prediction = str(round(Sort_ThoraxDataFrame.iloc[i][1]*100,1))+" %"
+    PredictionList.append(Prediction)
+        
+PredListOutput = [LabelList[0],PredictionList[0],
+                  LabelList[1],PredictionList[1],
+                  LabelList[2],PredictionList[2]
+                  ]
+
 
 
 #%%
