@@ -1,30 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 30 16:56:51 2021
-
-@author: Andres
-"""
 from fpdf import FPDF
 from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
 import pandas as pd
 
+from GenerateReportConstantManager import thoraxlabels
+from GenerateReportConstantManager import OutputPath_Heatmap, OutputPath_pdfreport
+from GenerateReportConstantManager import Path_TemplateUS, Path_TemplateLATAM, Path_OutputReportGenerated
+
+
 def generate_predictedlabels(prediction):
-    
-    thoraxlabels = ["Atelectasis",
-                    "Cardiomegaly",
-                    "Effusion",
-                    "Infiltration",
-                    "Mass",
-                    "Nodule",
-                    "Pneumonia",
-                    "Pneumothorax",
-                    "Consolidation",
-                    "Edema",
-                    "Emphysema",
-                    "Fibrosis",
-                    "Pleural_Thickening",
-                    "Hernia"]
-    
+        
     ThoraxDataFrame=pd.DataFrame(columns=['Labels','Predictions'])
     ThoraxDataFrame['Labels'] = thoraxlabels
     ThoraxDataFrame['Predictions'] = prediction
@@ -104,7 +88,7 @@ def generate_pdftemplate(patient_name,
     
     x_position = pdf.x
     pdf.x = x_position
-    pdf.cell(4, 0.5,'Genre',align='C',border=border)
+    pdf.cell(4, 0.5,'Gender',align='C',border=border)
     
     pdf.set_text_color(0,0,0)
     pdf.ln(1)
@@ -156,7 +140,7 @@ def generate_pdftemplate(patient_name,
     pdf.set_font('Arial', '', 10)
     pdf.multi_cell(10,0.7,report,align='L',border=border)
     
-    pdf.image('./misc/thoraxheatmap.png',x=12,y=11,w=7.5,h=7.5)
+    pdf.image(OutputPath_Heatmap,x=12,y=11,w=7.5,h=7.5)
     
     y_position = 19
     pdf.y = y_position
@@ -173,21 +157,21 @@ def generate_pdftemplate(patient_name,
     pdf.multi_cell(10,0.7, txt=label2 + ": "+ pred2 ,align='L',border=border)
     pdf.multi_cell(10,0.7, txt=label3 + ": "+ pred3 ,align='L',border=border)
     
-    pdf.output('./misc/fpdf_pdf_report.pdf', 'F')
+    pdf.output(OutputPath_pdfreport, 'F')
     
     return 
 
 def get_pdfreport(region):
     
-    PdfBaseReport = PdfFileReader('./misc/fpdf_pdf_report.pdf','rb')
+    PdfBaseReport = PdfFileReader(OutputPath_pdfreport,'rb')
     
     if region=='US':
     
-        PdfBackground = PdfFileReader('./misc/IMEXHSUS.pdf','rb')
+        PdfBackground = PdfFileReader(Path_TemplateUS,'rb')
     
     else:
         
-        PdfBackground = PdfFileReader('./misc/IMEXHSLATAM.pdf','rb')
+        PdfBackground = PdfFileReader(Path_TemplateLATAM,'rb')
     
     PdfBaseReport=PdfBaseReport.getPage(0)
     PdfBackground=PdfBackground.getPage(0)
@@ -196,7 +180,7 @@ def get_pdfreport(region):
     pdfOutput = PdfFileWriter()
     pdfOutput.addPage(PdfBaseReport)
     
-    pdfOutputFile = open('./misc/OutputReport.pdf', 'wb')
+    pdfOutputFile = open(Path_OutputReportGenerated, 'wb')
     
     pdfOutput.write(pdfOutputFile)
     

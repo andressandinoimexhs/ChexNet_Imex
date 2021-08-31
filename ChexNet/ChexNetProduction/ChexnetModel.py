@@ -13,19 +13,13 @@ from GenerateReport import GenerateReportClass
 
 from ChexnetConstantManager import ImgSize, MaxIntensityValue,ImagenetMean,ImagenetStd
 
-
-
-# ImgSize = (224,224)
-# MaxIntensityValue = 255
-# ImagenetMean = np.array([0.485, 0.456, 0.406])
-# ImagenetStd = np.array([0.229, 0.224, 0.225])
-
-
-#%%
 class ChexnetModel():
+   
     """This class is used to predict 14 different patologies in chest X-ray images"""
 
     def __init__(self,mdl):
+        
+        """ ChexNet pre-trained model """
         
         self.mdl=mdl
             
@@ -33,10 +27,10 @@ class ChexnetModel():
         
         """ Input image normalized by ImageNet meand and std """
     
-        ImgIn = cv.resize(ImgIn,ImgSize)    
-        ImgIn = np.asarray(ImgIn/MaxIntensityValue)
-        ImgMean = ImagenetMean
-        ImgStd = ImagenetStd
+        ImgIn = cv.resize(ImgIn,ImgSize) # Image resize to (224,224)
+        ImgIn = np.asarray(ImgIn/MaxIntensityValue) # Intensities normalization
+        ImgMean = ImagenetMean # Mean values from Imagenet images
+        ImgStd = ImagenetStd # Std values from Imagenet images
         
         # Imagenet standarization -> z = (x-mean)/std
         ImgOut = (ImgIn - ImgMean ) / ImgStd
@@ -44,7 +38,7 @@ class ChexnetModel():
         return ImgOut
 
 
-    def run_prediction(self,img):
+    def run_prediction(self,ImgInput):
         
         """
         Input: X-Ray thorax image 
@@ -52,19 +46,18 @@ class ChexnetModel():
         """
         
         # Preprocessin image (Standarization)
-        PreprocessedImg = self.run_preprocessing(img)
+        PreprocessedImg = self.run_preprocessing(ImgInput)
         
         # Expanding image dimensions to feed classification model
         PreprocessedImgExpand = np.expand_dims(PreprocessedImg,axis=0)
         
         # Model prediction
-        prediction = self.mdl.predict(PreprocessedImgExpand)
+        Prediction = self.mdl.predict(PreprocessedImgExpand)
         
-        # Dimention reduction (So as to obtain a 1-D vector)
-        PredictionProbabilities = np.squeeze(prediction,axis=0) 
+        PredictionProbabilities = np.squeeze(Prediction,axis=0) # Create a 1-D vector
         
         # Heatmap building using gradcam function
-        ImgHeatmap=gradcam(self.mdl,PreprocessedImg,PreprocessedImgExpand)
+        ImgHeatmap=gradcam(self.mdl,ImgInput,PreprocessedImgExpand)
 
         return PredictionProbabilities
 
@@ -81,7 +74,7 @@ mdl=ChexnetModel(load_mdl_chexnet())
 #%%
 imgdir = "C:/Users/Andres/Desktop/images/"
 
-numfile = 2
+numfile = 1
 listimgfile = os.listdir(imgdir)
 imgfile = os.path.join(imgdir,listimgfile[numfile])
 
