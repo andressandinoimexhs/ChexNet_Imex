@@ -68,6 +68,7 @@ class ChexnetModel():
 #%%
 """
 PRUEBA DEL MODELO
+
 """
 
 mdl=ChexnetModel(load_mdl_chexnet())

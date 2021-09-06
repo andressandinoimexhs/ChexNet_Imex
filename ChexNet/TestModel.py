@@ -72,9 +72,28 @@ weights_path='C:/Users/Andres/Desktop/weight_func.h5'
 #weights_path="/home/usuario/Descargas/modelo.h5"
 model.load_weights(weights_path)
 
+#%%# from tensorflow.keras import Model
+#mdl = model.layers[0]
+mdl = model
+numlayers = len(mdl.layers)
+
+SplitModel = Model(inputs=mdl.input,outputs=mdl.layers[numlayers-2].output)
+input_img = Input(shape=(224,224,3))
+SplitModelOut = SplitModel(input_img)
+
+output = Dense(15,activation='sigmoid')(SplitModelOut)
+
+model2 = Model(input_img,output)
+
+weights_path='C:/Users/Andres/Desktop/modelo_15Ft.h5'
+model2.load_weights(weights_path)
+
+
+
+
 #%%
 
-model.save('C:/Users/Andres/Desktop/ChexNetModel.h5')
+model2.save('C:/Users/Andres/Desktop/ChexNetModel2.h5')
 
 #%%
 
