@@ -71,12 +71,12 @@ PRUEBA DEL MODELO
 
 """
 
-# mdl=ChexnetModel(load_mdl_chexnet())
+mdl=ChexnetModel(load_mdl_chexnet())
 
 #%%
 imgdir = "C:/Users/Andres/Desktop/images/"
 
-numfile = 50
+numfile = 1
 listimgfile = os.listdir(imgdir)
 imgfile = os.path.join(imgdir,listimgfile[numfile])
 

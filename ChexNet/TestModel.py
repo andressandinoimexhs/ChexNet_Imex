@@ -72,28 +72,128 @@ weights_path='C:/Users/Andres/Desktop/weight_func.h5'
 #weights_path="/home/usuario/Descargas/modelo.h5"
 model.load_weights(weights_path)
 
-#%%# from tensorflow.keras import Model
-#mdl = model.layers[0]
-mdl = model
-numlayers = len(mdl.layers)
+#%%
 
-SplitModel = Model(inputs=mdl.input,outputs=mdl.layers[numlayers-2].output)
-input_img = Input(shape=(224,224,3))
-SplitModelOut = SplitModel(input_img)
+input_shape = (224, 224, 3)
 
-output = Dense(15,activation='sigmoid')(SplitModelOut)
+img_input = Input(shape=input_shape)
 
-model2 = Model(input_img,output)
+mdl = tf.keras.applications.DenseNet121(include_top=False,
+                                              weights=None,
+                                              #weights='imagenet',
+                                              #weights=None,
+                                              input_tensor=img_input,
+                                              input_shape=(224,224,3),
+                                              pooling='avg',
+                                              classes=15,)
 
-weights_path='C:/Users/Andres/Desktop/modelo_15Ft.h5'
+x = mdl.output
+        # Last output layer is a dense connected layer with sigmoid activation according to the CheXNet paper
+#predictions = Dense(len(class_names), activation="sigmoid", name="predictions")(x)
+predictions = Dense(15, activation="sigmoid", name="predictions")(x)
+
+model2 = Model(inputs=img_input, outputs=predictions)
+
+#%%
+
+weights_path='C:/Users/Andres/Desktop/weights_model_15ft.h5'
 model2.load_weights(weights_path)
 
+#%%
+
+model2.save('C:/Users/Andres/Desktop/ChexNetModel3.h5')
+
+# #%%# from tensorflow.keras import Model
+# #mdl = model.layers[0]
+# mdl = model
+# numlayers = len(mdl.layers)
+
+# SplitModel = Model(inputs=mdl.input,outputs=mdl.layers[numlayers-2].output)
+# input_img = Input(shape=(224,224,3))
+# SplitModelOut = SplitModel(input_img)
+
+# output = Dense(15,activation='sigmoid')(SplitModelOut)
+
+# model2 = Model(input_img,output)
+
+# weights_path='C:/Users/Andres/Desktop/modelo_15Ft.h5'
+# model2.load_weights(weights_path)
+
+# #%%
+
+# layers = [l for l in model.layers]
+
+# #%%
+# layer_id=248
+# x = layers[0].output
+
+# #%%
+# for i in range(1, len(layers)):
+#     if i == layer_id:
+#         x = new_layer(x)
+#     else:
+#         print(i)
+#         x = layers[i](x)
+
+
+# #%%
+# model3 = tf.keras.Sequential()
+
+# #%%
+
+# for i in range(1,10):
+#     model3.add(layers[i])
+
+# #%%
+
+# def replace_intermediate_layer_in_keras(model, layer_id, new_layer):
+#     from tensorflow.keras.models import Model
+
+#     layers = [l for l in model.layers]
+
+#     x = layers[0].output
+#     for i in range(1, len(layers)):
+#         if i == layer_id:
+#             x = new_layer(x)
+#         else:
+#             x = layers[i](x)
+
+#     new_model = Model(input=layers[0].input, output=x)
+#     return new_model
+
+# def insert_intermediate_layer_in_keras(model, layer_id, new_layer):
+#     from keras.models import Model
+
+#     layers = [l for l in model.layers]
+
+#     x = layers[0].output
+#     for i in range(1, len(layers)):
+#         if i == layer_id:
+#             x = new_layer(x)
+#         x = layers[i](x)
+
+#     new_model = Model(input=layers[0].input, output=x)
+#     return new_model
+
+# #%%
+
+# model4 = replace_intermediate_layer_in_keras(mdl, 248, Dense(15,activation='sigmoid'))
+
+
+# #%%
+
+# model3 = tf.keras.Sequential()
+
+# #%%
+
+# for layer in mdl.layers[:-1]: # go through until last layer
+#     model.add(layer)
 
 
 
 #%%
 
-model2.save('C:/Users/Andres/Desktop/ChexNetModel2.h5')
+# model2.save('C:/Users/Andres/Desktop/ChexNetModel2.h5')
 
 #%%
 
