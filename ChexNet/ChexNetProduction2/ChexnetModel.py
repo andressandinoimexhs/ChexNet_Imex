@@ -70,10 +70,17 @@ class ChexnetModel():
 PRUEBA DEL MODELO
 
 """
+from time import time
+start_time = time() 
+
 
 mdl=ChexnetModel(load_mdl_chexnet())
 
 #%%
+
+from time import time
+start_time = time() 
+
 imgdir = "C:/Users/Andres/Desktop/images/"
 
 numfile = 1
@@ -88,7 +95,9 @@ img = cv.imread(imgfile)
 
 prediction = mdl.run_prediction(img)
 
-#%%
+elapsed_time = time() - start_time 
+print(elapsed_time)
+
 
 # Metadata
 patient_name = "Andres"
@@ -105,5 +114,16 @@ report=GenerateReportClass(patient_name, ID, genre,date,study_name,study_date,re
 report.generate_pdf()
 
 print("el reporte ha sido generado con exito")
+
+minutes=np.round(np.floor(elapsed_time/60),0)
+seconds=np.round((elapsed_time/60-minutes)*60,0)
+print(str(minutes)+' minutes '+ str(seconds) + ' seconds ')
+
 #zz.generate_pdf()
 
+#%%
+
+
+print("hello")
+end = time.time()
+print(end - start)
