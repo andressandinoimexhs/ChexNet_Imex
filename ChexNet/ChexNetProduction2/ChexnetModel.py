@@ -122,8 +122,3 @@ print(str(minutes)+' minutes '+ str(seconds) + ' seconds ')
 #zz.generate_pdf()
 
 #%%
-
-
-print("hello")
-end = time.time()
-print(end - start)
