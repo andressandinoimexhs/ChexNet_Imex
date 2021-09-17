@@ -426,4 +426,4 @@ tn, fp, fn, tp=confusion_matrix(truevector, np.round(predictvector>0.5)).ravel()
 
 #print(ll)
 
-
+a=0;
