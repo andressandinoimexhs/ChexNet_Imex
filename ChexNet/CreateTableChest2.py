@@ -108,8 +108,8 @@ nq =  pd.DataFrame(columns = ['filename', 'A1','A2','A3',
                                    'A13','A14','A15'])
 kk=""
 pepito=[]
-#for i in tqdm(range(len(labels))):
-for i in tqdm(range(0,10)):
+for i in tqdm(range(len(labels))):
+#for i in tqdm(range(0,10)):
     
     ll=[]
     label = df['Finding Labels'][i]  
@@ -129,7 +129,7 @@ for i in tqdm(range(0,10)):
     nq = nq.append(ll,ignore_index=True)
 
 #%%     
-nq.to_csv('/home/usuario/Documentos/GitHub/DL_Project/ChexNet/data/dataframe.csv')
+nq.to_csv('C:/Users/Andres/Desktop/dataframe15features.csv')
 print("Fin del proceso")
 
 #np.savetxt('C:/Users/Andres/Desktop/np.txt', df.values, fmt='%d')                 
